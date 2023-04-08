@@ -1,4 +1,4 @@
-"""Authentication schema module."""
+"""Login schema module."""
 
 from marshmallow import fields as ma_fields
 
@@ -7,11 +7,11 @@ from api import ma
 from ..models import user_model
 
 
-class AuthenticationSchema(ma.SQLAlchemySchema):
-    """Authentication schema class."""
+class LoginSchema(ma.SQLAlchemySchema):
+    """Login schema class."""
 
     class Meta:
-        """Authentication schema meta definitions."""
+        """Login schema meta definitions."""
 
         model = user_model.User
         fields = ("id", "name", "email", "password")

@@ -1,15 +1,20 @@
-"""Authentication views module."""
+"""Login views module."""
 
 from datetime import timedelta
 
 from flask import jsonify, make_response, request
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_restful import Resource
 
 from api import api
 from config import AUTH_TOKEN_VALIDITY
 
-from ..schemas import authentication_schema
+from ..schemas import login_schema
 from ..services import user_service
 
 
@@ -21,12 +26,12 @@ def get_user_fields(req):
     return email, password
 
 
-class AuthenticationList(Resource):
-    """Authentication class based views without parameter."""
+class Login(Resource):
+    """Login class based views without parameter."""
 
     def post(self):
-        """Create Authentication view."""
-        auth_schema = authentication_schema.AuthenticationSchema()
+        """User login view."""
+        auth_schema = login_schema.LoginSchema()
         validate = auth_schema.validate(request.json)
         if validate:
             return make_response(jsonify(validate), 400)
@@ -39,11 +44,13 @@ class AuthenticationList(Resource):
                 identity=user_db.id,
                 expires_delta=timedelta(seconds=AUTH_TOKEN_VALIDITY),
             )
+            refresh_token = create_refresh_token(identity=user_db.id)
 
             return make_response(
                 jsonify(
                     {
                         "access_token": access_token,
+                        "refresh_token": refresh_token,
                         "message": "Login realizado com sucesso!",
                     }
                 ),
@@ -53,4 +60,29 @@ class AuthenticationList(Resource):
         return make_response(jsonify({"message": "Credenciais inválidas!"}), 401)
 
 
-api.add_resource(AuthenticationList, "/login")
+class RefreshToken(Resource):
+    """Refresh token class based views without parameter."""
+
+    @jwt_required(refresh=True)
+    def post(self):
+        """Refresh token view."""
+        user_token = get_jwt_identity()
+        access_token = create_access_token(
+            identity=user_token,
+            expires_delta=timedelta(seconds=AUTH_TOKEN_VALIDITY),
+        )
+        refresh_token = create_refresh_token(identity=user_token)
+
+        return make_response(
+            jsonify(
+                {
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
+                }
+            ),
+            200,
+        )
+
+
+api.add_resource(Login, "/login")
+api.add_resource(RefreshToken, "/token/refresh")
