@@ -11,7 +11,7 @@ from flask_jwt_extended import (
 )
 from flask_restful import Resource
 
-from api import api
+from api import api, jwt
 from config import AUTH_TOKEN_VALIDITY
 
 from ..schemas import login_schema
@@ -28,6 +28,17 @@ def get_user_fields(req):
 
 class Login(Resource):
     """Login class based views without parameter."""
+
+    @jwt.additional_claims_loader
+    def add_claim_to_access_token(identity):
+        """Add roles to user."""
+        user = user_service.get_user_by_pk(identity)
+        if user.is_admin:
+            roles = "admin"
+        else:
+            roles = "user"
+
+        return {"roles": roles}
 
     def post(self):
         """User login view."""

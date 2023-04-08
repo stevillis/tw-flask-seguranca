@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api import api
+from api.utils.decorators import admin_required
 
 from ..entities import todo_entity
 from ..models.todo_model import Todo
@@ -51,7 +52,7 @@ class TodoList(Resource):
         # return make_response(ts.jsonify(todos), 200)
         return paginate(Todo, ts)
 
-    @jwt_required()
+    @admin_required
     def post(self):
         """
         Create Todo.
@@ -90,6 +91,10 @@ class TodoList(Resource):
           404:
             description: Todo not found.
         """
+        # claims = get_jwt()
+        # if claims["roles"] != "admin":
+        #     return make_response(jsonify("User without authorization to access the resource."), 403)
+
         ts = todo_schema.TodoSchema()
         validate = ts.validate(request.json)
         if validate:

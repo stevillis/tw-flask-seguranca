@@ -15,8 +15,9 @@ def get_user_fields(req):
     name = req.json["name"]
     email = req.json["email"]
     password = req.json["password"]
+    is_admin = req.json["is_admin"]
 
-    return name, email, password
+    return name, email, password, is_admin
 
 
 class UserList(Resource):
@@ -29,9 +30,9 @@ class UserList(Resource):
         if validate:
             return make_response(jsonify(validate), 400)
 
-        name, email, password = get_user_fields(request)
+        name, email, password, is_admin = get_user_fields(request)
 
-        new_user = user_entity.User(name=name, email=email, password=password)
+        new_user = user_entity.User(name=name, email=email, password=password, is_admin=is_admin)
 
         user_db = user_service.create_user(new_user)
 

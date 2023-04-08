@@ -13,6 +13,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False)
+    is_admin = db.Column(db.Boolean, nullable=False)
 
     def encrypt_password(self):
         """Encrypt password using sha256."""

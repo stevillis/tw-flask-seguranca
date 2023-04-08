@@ -4,10 +4,11 @@
 class User:
     """User entity."""
 
-    def __init__(self, name: str, email: str, password: str) -> None:
+    def __init__(self, name: str, email: str, password: str, is_admin: bool) -> None:
         self.__name = name
         self.__email = email
         self.__password = password
+        self.__is_admin = is_admin
 
     @property
     def name(self):
@@ -38,3 +39,13 @@ class User:
     def password(self, password: str) -> None:
         """Password setter."""
         self.__password = password
+
+    @property
+    def is_admin(self) -> bool:
+        """Is admin getter."""
+        return self.__is_admin
+
+    @is_admin.setter
+    def is_admin(self, is_admin: bool) -> None:
+        """Is admin setter."""
+        self.__is_admin = is_admin
