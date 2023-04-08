@@ -2,7 +2,7 @@
 from functools import wraps
 
 from flask import jsonify, make_response
-from flask_jwt_extended import verify_jwt_in_request, get_jwt
+from flask_jwt_extended import get_jwt, verify_jwt_in_request
 
 
 def admin_required(fn):
@@ -13,7 +13,9 @@ def admin_required(fn):
         verify_jwt_in_request()
         claims = get_jwt()
         if claims["roles"] != "admin":
-            return make_response(jsonify("User without authorization to access the resource."), 403)
+            return make_response(
+                jsonify("User without authorization to access the resource."), 403
+            )
 
         return fn(*args, **kwargs)
 

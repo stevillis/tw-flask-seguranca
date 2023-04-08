@@ -1,6 +1,11 @@
 # Flask Todo REST API
 A Todo REST API app made with Flask.
 
+## Configure pre-commit
+```shell
+$ pre-commit install
+```
+
 ## Running the API
 ```shell
 $ python run.py
