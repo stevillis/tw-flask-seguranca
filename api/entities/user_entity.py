@@ -4,11 +4,14 @@
 class User:
     """User entity."""
 
-    def __init__(self, name: str, email: str, password: str, is_admin: bool) -> None:
+    def __init__(
+        self, name: str, email: str, password: str, is_admin: bool, api_key: str
+    ) -> None:
         self.__name = name
         self.__email = email
         self.__password = password
         self.__is_admin = is_admin
+        self.__api_key = api_key
 
     @property
     def name(self):
@@ -49,3 +52,13 @@ class User:
     def is_admin(self, is_admin: bool) -> None:
         """Is admin setter."""
         self.__is_admin = is_admin
+
+    @property
+    def api_key(self) -> str:
+        """API Key getter."""
+        return self.__api_key
+
+    @api_key.setter
+    def api_key(self, api_key: str) -> None:
+        """API Key setter."""
+        self.__api_key = api_key

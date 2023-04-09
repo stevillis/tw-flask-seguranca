@@ -1,5 +1,7 @@
 """User views module."""
 
+from uuid import uuid4
+
 from flask import jsonify, make_response, request
 from flask_restful import Resource
 
@@ -31,8 +33,15 @@ class UserList(Resource):
             return make_response(jsonify(validate), 400)
 
         name, email, password, is_admin = get_user_fields(request)
+        api_key = str(uuid4())
 
-        new_user = user_entity.User(name=name, email=email, password=password, is_admin=is_admin)
+        new_user = user_entity.User(
+            name=name,
+            email=email,
+            password=password,
+            is_admin=is_admin,
+            api_key=api_key,
+        )
 
         user_db = user_service.create_user(new_user)
 

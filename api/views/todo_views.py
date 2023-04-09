@@ -5,7 +5,7 @@ from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 
 from api import api
-from api.utils.decorators import admin_required
+from api.utils.decorators import admin_required, api_key_required
 
 from ..entities import todo_entity
 from ..models.todo_model import Todo
@@ -26,7 +26,8 @@ def get_todo_fields(req):
 class TodoList(Resource):
     """Todo class based views without parameter."""
 
-    @jwt_required()
+    # @jwt_required()
+    @api_key_required
     def get(self):
         """
         List all Todos.
